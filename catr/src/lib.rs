@@ -1,3 +1,4 @@
+
 use std::error::Error;
 use clap::{App, Arg};
 type MyResult<T> = Result<T, Box<dyn Error>>;
@@ -10,8 +11,7 @@ pub struct Config {
 }
 
 pub fn run(config: Config) -> MyResult<()>{
-    dbg!(config);
-    
+    dbg!(config);    
     Ok(())
 }
 
@@ -24,8 +24,8 @@ pub fn get_args() -> MyResult<Config>{
             Arg::with_name("filename")
                 .value_name("FILE")
                 .help("name of file to display")
-                .required(true)
-                .min_values(1),
+                .multiple(true)
+                .default_value("-"),
 
         )
         .arg(
@@ -33,6 +33,7 @@ pub fn get_args() -> MyResult<Config>{
                 .short("n")
                 .long("number")
                 .help("display all lines in file numbered")
+                .conflicts_with("nonblank")
                 .takes_value(false),
         )
         .arg(
@@ -46,13 +47,10 @@ pub fn get_args() -> MyResult<Config>{
     
     let files: Vec<String> = matches.values_of("filename").unwrap()
         .map(String::from).collect();
-
-    let number_all = if matches.is_present("number") && !matches.is_present("nonblank") {true} else {false};
-    let number_nonblank = if matches.is_present("nonblank") && !matches.is_present("number") {true} else {false};
     
     Ok(Config{
         files: files,
-        number_lines: number_all,
-        number_nonblank_lines: number_nonblank,
+        number_lines: matches.is_present("number"),
+        number_nonblank_lines: matches.is_present("nonblank"),
     })
 }
