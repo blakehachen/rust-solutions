@@ -1,6 +1,8 @@
-
 use std::error::Error;
 use clap::{App, Arg};
+use std::fs::File;
+use std::io::{BufRead, BufReader};
+
 type MyResult<T> = Result<T, Box<dyn Error>>;
 
 #[derive(Debug)]
@@ -10,8 +12,40 @@ pub struct Config {
     number_nonblank_lines: bool,
 }
 
-pub fn run(config: Config) -> MyResult<()>{
-    dbg!(config);    
+fn open(filename: &str) -> MyResult<Box<dyn BufRead>>{
+    match filename {
+        "-" => Ok(Box::new(BufReader::new(std::io::stdin()))),
+        _ => Ok(Box::new(BufReader::new(File::open(filename)?)))
+    }
+}
+
+
+pub fn run(config: Config) -> MyResult<()>{    
+    let mut num_str = 0;
+    for filename in config.files {
+        match open(&filename) {
+           Err(err) => eprintln!("{}: {}", filename, err),
+           Ok(file) => {
+                for line in file.lines() { 
+                    let real_line = line.unwrap(); 
+                    if config.number_lines {
+                        num_str += 1;
+                        println!("{:>6}\t{}", num_str, real_line);
+              
+                    }else if config.number_nonblank_lines {
+                        if real_line.trim().is_empty(){
+                            println!();
+                        }else{
+                            num_str += 1;
+                            println!("{:>6}\t{}", num_str, real_line);
+                        } 
+                    }else{
+                        println!("{}", real_line);
+                    }
+                }
+           }
+       }
+    }
     Ok(())
 }
 
