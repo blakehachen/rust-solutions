@@ -23,4 +23,19 @@ before mandatory text and print said text on the command line
 a pointer
     * write helper function to perform many tests
     * write shell script to create files containing real echo output
- 
+
+## Chapter 3
+
+Third chapter involved the use of `clap` to process command line arguments in
+order to create a clone of shell command cat. catr will take an optional flag
+for printing each line within a file numbered, non-blank lines only numbered,
+or no numbers at all. The catr implementation has the ability to display
+multiple files with a running line count
+1. Used match keyword for better control flow when default parameter is tested
+2. Used BufReader and iterator to examine lines of individual file
+3. Learned more clap functions (multiple, required) `cargo run -- [FLAG] [FILES]`
+4. Practiced test-driven development as seen in catr/tests
+    * various test macros compare output of GNU cat command to catr
+    * checks for file open errors and default arg
+    * all possible stress tests for a simple cat command (multiple text files
+      with cat output to compare to)
