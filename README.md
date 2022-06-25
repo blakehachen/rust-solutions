@@ -39,3 +39,20 @@ multiple files with a running line count
     * checks for file open errors and default arg
     * all possible stress tests for a simple cat command (multiple text files
       with cat output to compare to)
+
+## Chapter 4
+
+Fourth chapter focused on reimplementing GNU command head, it has optional
+flags that take arguments. The command takes a list of files `[FILES] | cargo run -- [FLAG]` the two flags that I implemented were bytes and lines.
+1. transpose Option to obtain result and unwrap to get value of result, this
+   was the practice that I used to error check the command in order to make
+sure a non negative integer was specified.
+2. When reading the buffer both bytes and lines needed to be taken into
+   account.
+    * if bytes were specified I would use the take function to specify the
+      amount of the file I wanted to be read the bytes into a vector and then
+print the buffer accounting for utf8 encoding
+    * if lines were specified then I would simply read lines up to the
+      specified line count printing each line along the way.
+3. mapping a function to a list turned out to be very helpful during this
+   chapter.
